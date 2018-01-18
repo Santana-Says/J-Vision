@@ -8,6 +8,8 @@
 
 import UIKit
 import AVFoundation
+import CoreML
+import Vision
 
 class CameraVC: UIViewController {
 
@@ -70,11 +72,24 @@ class CameraVC: UIViewController {
 	
 	@objc func didTapCameraView() {
 		let settings = AVCapturePhotoSettings()
-		let previewPixelType = settings.availablePreviewPhotoPixelFormatTypes.first!	//returns a basic photo
-		let previewFormat = [kCVPixelBufferPixelFormatTypeKey as String: previewPixelType, kCVPixelBufferWidthKey as String: 160, kCVPixelBufferHeightKey as String: 160]
-		
-		settings.previewPhotoFormat = previewFormat	//make thumbnail size image
+		settings.previewPhotoFormat = settings.embeddedThumbnailPhotoFormat
 		cameraOutput.capturePhoto(with: settings, delegate: self)
+	}
+	
+	func resultsMethod(request: VNRequest, error: Error?) {
+		guard let results = request.results as? [VNClassificationObservation] else { return }
+		
+		for classification in results {
+			print(classification.identifier )
+			if classification.confidence < 0.5 {
+				identificationLbl.text = "I'm not sure what this is, try again"
+				confidenceLbl.text = ""
+			} else {
+				identificationLbl.text = classification.identifier
+				confidenceLbl.text = "CONFIDENCE: \(Int(classification.confidence * 100))%"
+			}
+			break
+		}
 	}
 
 }
@@ -85,6 +100,15 @@ extension CameraVC: AVCapturePhotoCaptureDelegate {
 			debugPrint(error)
 		} else {
 			photoData = photo.fileDataRepresentation()
+			
+			do {
+				let model = try VNCoreMLModel(for: SqueezeNet().model)							//see's image
+				let request = VNCoreMLRequest(model: model, completionHandler: resultsMethod)	//think about image
+				let handler = VNImageRequestHandler(data: photoData!)							//make comparisons
+				try handler.perform([request])													//produce data
+			} catch {
+				debugPrint(error)
+			}
 			
 			let image = UIImage(data: photoData!)
 			captureImgView.image = image
