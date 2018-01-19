@@ -32,6 +32,7 @@ class CameraVC: UIViewController {
 	var previewLayer: AVCaptureVideoPreviewLayer!	//see through camera
 	var photoData: Data?
 	var flashControlState: FlashState = .off
+	var speechSynthesizer = AVSpeechSynthesizer()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -74,6 +75,7 @@ class CameraVC: UIViewController {
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		previewLayer.frame = cameraView.bounds		//same size as cameraView
+		speechSynthesizer.delegate = self
 	}
 	
 	@objc func didTapCameraView() {
@@ -95,16 +97,47 @@ class CameraVC: UIViewController {
 		for classification in results {
 			print(classification.identifier )
 			if classification.confidence < 0.5 {
-				identificationLbl.text = "I'm not sure what this is, try again"
+				let unknownObjectMessage = "I'm not sure what this is, try again"
+				identificationLbl.text = unknownObjectMessage
+				synthesizeSpeech(fromString: unknownObjectMessage)
 				confidenceLbl.text = ""
 			} else {
-				identificationLbl.text = classification.identifier
-				confidenceLbl.text = "CONFIDENCE: \(Int(classification.confidence * 100))%"
+				let identification = classification.identifier
+				let confidence = "\(Int(classification.confidence * 100))"
+				
+				identificationLbl.text = identification
+				confidenceLbl.text = "CONFIDENCE: \(confidence)%"
+				synthesizeSpeech(fromString: randomPhrase(object: identification, confidence: confidence))
 			}
 			break
 		}
 	}
 	
+	func randomPhrase(object: String, confidence: String) -> String {
+		let randomizer = Int(arc4random_uniform(3))
+		let phrase: String!
+		
+		switch randomizer {
+		case 0:
+			phrase = "Bruh, it's a \(object), and I'm about \(confidence) percent sure about it!"
+		case 1:
+			phrase = "I am \(confidence)% sure you are wasting my time with this cheap \(object)"
+		case 2:
+			phrase = "I am \(confidence)% sure about two things in life. One, that this is a \(object), and two, that you are a virgin. Ha, burn."
+		default:
+			phrase = ""
+		}
+		return phrase
+	}
+	
+	// MARK: - SpeechSynthesizer
+	func synthesizeSpeech(fromString string: String) {
+		let speechUtterance = AVSpeechUtterance(string: string)
+		speechUtterance.voice = AVSpeechSynthesisVoice(language: "en-GB")
+		speechSynthesizer.speak(speechUtterance)
+	}
+	
+	// MARK: - IBActions
 	@IBAction func flashBtnPressed(_ sender: Any) {
 		switch flashControlState {
 		case .off:
@@ -139,4 +172,10 @@ extension CameraVC: AVCapturePhotoCaptureDelegate {
 		}
 	}
 	
+}
+
+extension CameraVC: AVSpeechSynthesizerDelegate {
+	func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+		//code to finish utterance
+	}
 }
