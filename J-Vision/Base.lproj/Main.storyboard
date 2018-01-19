@@ -80,6 +80,10 @@
                                     <action selector="flashBtnPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="mU6-CU-c8g"/>
                                 </connections>
                             </button>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="BMs-Ad-yD5">
+                                <rect key="frame" x="346" y="642" width="20" height="20"/>
+                                <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -88,6 +92,8 @@
                             <constraint firstAttribute="trailing" secondItem="cQN-En-PQ2" secondAttribute="trailing" id="48B-5a-wTA"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Amz-GM-u4N" secondAttribute="trailing" constant="20" id="IEE-nf-v0J"/>
                             <constraint firstItem="nMi-Dj-A7Z" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="LKV-Sk-afa"/>
+                            <constraint firstItem="BMs-Ad-yD5" firstAttribute="centerX" secondItem="Amz-GM-u4N" secondAttribute="centerX" id="NNi-mY-5n7"/>
+                            <constraint firstItem="BMs-Ad-yD5" firstAttribute="centerY" secondItem="Amz-GM-u4N" secondAttribute="centerY" id="Ruw-1e-AnK"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Amz-GM-u4N" secondAttribute="bottom" constant="20" id="Tk0-FR-qqi"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Y8E-hX-hgJ" secondAttribute="trailing" constant="20" id="WJC-lz-3AW"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="nMi-Dj-A7Z" secondAttribute="bottom" constant="20" id="gSK-Dg-B3z"/>
@@ -104,6 +110,7 @@
                         <outlet property="flashBtn" destination="nMi-Dj-A7Z" id="73q-QG-dCp"/>
                         <outlet property="identificationLbl" destination="8zy-fJ-AuI" id="iZa-Lw-QnQ"/>
                         <outlet property="roundedLblView" destination="Y8E-hX-hgJ" id="vPw-bb-Xv6"/>
+                        <outlet property="spinner" destination="BMs-Ad-yD5" id="dXX-wc-Q4d"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
